@@ -85,6 +85,34 @@
       display: block;
     }
 
+    #qr-popup {
+      position: absolute;
+      left: 0;
+      top: 476px;
+      bottom: auto;
+      z-index: 12;
+      display: block;
+      width: 128px;
+      height: auto;
+      min-width: 96px;
+      max-width: 160px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      transform: none;
+    }
+
+    #qr-popup img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #qr-popup.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     #device-badge {
       position: fixed;
       right: 16px;
@@ -104,6 +132,15 @@
       body {
         padding: 10px;
       }
+      #qr-popup {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        top: auto;
+        transform: translateX(-50%);
+        width: 180px;
+        max-width: 90vw;
+      }
     }
   </style>
 </head>
@@ -117,7 +154,6 @@
           id="video-frame"
           controls
           autoplay
-          muted
           playsinline
           loop
         >
@@ -126,6 +162,14 @@
         </video>
         <div id="video-placeholder">Carregando vídeo…</div>
       </div>
+      <a
+        id="qr-popup"
+        href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img src="QR CODE POPUP.png" alt="QR Code Popup" />
+      </a>
     </div>
     <div id="device-badge">Ajustando layout…</div>
   </div>
@@ -184,6 +228,7 @@
       if (source && VIDEO_URL) {
         source.src = VIDEO_URL;
         videoFrame.load();
+        videoFrame.muted = false;
         videoFrame.style.display = "block";
         videoPlaceholder.style.display = "none";
       } else {
@@ -225,10 +270,19 @@
           : "Modo desktop • 1920 × 1080";
     }
 
+    function showQrPopup() {
+      const popup = document.getElementById("qr-popup");
+      if (!popup) return;
+      setTimeout(() => {
+        popup.classList.add("visible");
+      }, 30000);
+    }
+
     function init() {
       applyBackground(detectMode());
       applyVideo();
       resizeStage();
+      showQrPopup();
     }
 
     window.addEventListener("resize", resizeStage);
