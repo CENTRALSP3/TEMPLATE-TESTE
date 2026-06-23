@@ -92,13 +92,13 @@
       bottom: auto;
       z-index: 12;
       display: block;
-      width: 128px;
+      width: 256px;
       height: auto;
       min-width: 96px;
-      max-width: 160px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
+      max-width: 320px;
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 0.2s ease;
       transform: none;
     }
 
@@ -138,7 +138,7 @@
         bottom: 20px;
         top: auto;
         transform: translateX(-50%);
-        width: 180px;
+        width: 166px;
         max-width: 90vw;
       }
     }
@@ -270,19 +270,10 @@
           : "Modo desktop • 1920 × 1080";
     }
 
-    function showQrPopup() {
-      const popup = document.getElementById("qr-popup");
-      if (!popup) return;
-      setTimeout(() => {
-        popup.classList.add("visible");
-      }, 30000);
-    }
-
     function init() {
       applyBackground(detectMode());
       applyVideo();
       resizeStage();
-      showQrPopup();
     }
 
     window.addEventListener("resize", resizeStage);
