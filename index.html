@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview ServiceNow - Layout Responsivo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: #000;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #fff;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #stage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: top left;
+      overflow: hidden;
+      background-color: #111;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+
+    #bg-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.95);
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,0.08) 0,
+          rgba(255,255,255,0.08) 20px,
+          rgba(255,255,255,0.02) 20px,
+          rgba(255,255,255,0.02) 40px
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #video-container {
+      position: absolute;
+      background: #000;
+      overflow: hidden;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #video-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      object-fit: cover;
+      background: #000;
+    }
+
+    #video-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      border: 3px dashed rgba(255,255,255,0.35);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      padding: 20px;
+    }
+
+    #device-badge {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 9999;
+      background: rgba(17, 24, 39, 0.88);
+      color: #fff;
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(4px);
+      user-select: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="stage">
+      <div id="bg-placeholder">INSIRA O PNG AQUI</div>
+
+      <div id="video-container">
+        <video
+          id="video-frame"
+          controls
+          autoplay
+          muted
+          playsinline
+          preload="metadata"
+          aria-label="Vídeo incorporado ServiceNow">
+          <source id="video-source" src="" type="video/mp4" />
+          Seu navegador não suporta a reprodução de vídeo.
+        </video>
+        <div id="video-placeholder">INSIRA O VÍDEO AQUI</div>
+      </div>
+    </div>
+    <div id="device-badge">Carregando layout...</div>
+  </div>
+
+  <script>
+    const BACKGROUND_PNG_DESKTOP_URL = "bg-desktop.png";
+    const BACKGROUND_PNG_MOBILE_URL = "bg-mobile.png";
+    const VIDEO_URL = "https://ceabr-my.sharepoint.com/:v:/g/personal/lucas_banza_cea_com_br/IQCtooY57EDuQo33x_3L8bCyAXRzpc-eO6nceKcxUvFE8DA?e=mwbjJ5";
+
+    const layouts = {
+      desktop: {
+        baseWidth: 1920,
+        baseHeight: 1080,
+        video: {
+          x: 466.9,
+          y: 235.8,
+          width: 1400,
+          height: 787.5
+        }
+      },
+      mobile: {
+        baseWidth: 1080,
+        baseHeight: 1920,
+        video: {
+          x: 0,
+          y: 471.2,
+          width: 1080,
+          height: 607.5
+        }
+      }
+    };
+
+    const stage = document.getElementById("stage");
+    const videoContainer = document.getElementById("video-container");
+    const videoFrame = document.getElementById("video-frame");
+    const videoSource = document.getElementById("video-source");
+    const videoPlaceholder = document.getElementById("video-placeholder");
+    const bgPlaceholder = document.getElementById("bg-placeholder");
+    const deviceBadge = document.getElementById("device-badge");
+
+    function detectDevice() {
+      const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isSmallViewport = window.innerWidth <= 768;
+      return isMobileUA || isSmallViewport ? "mobile" : "desktop";
+    }
+
+    function getCurrentBackground(mode) {
+      return mode === "mobile" ? BACKGROUND_PNG_MOBILE_URL : BACKGROUND_PNG_DESKTOP_URL;
+    }
+
+    function applyBackground(mode) {
+      const bgUrl = getCurrentBackground(mode);
+      if (bgUrl) {
+        stage.style.backgroundImage = `url('${bgUrl}')`;
+        bgPlaceholder.style.display = "none";
+      } else {
+        stage.style.backgroundImage = "none";
+        bgPlaceholder.style.display = "flex";
+        bgPlaceholder.textContent = mode === "mobile" ? "INSIRA O PNG MOBILE AQUI" : "INSIRA O PNG DESKTOP AQUI";
+      }
+    }
+
+    function applyVideo() {
+      if (VIDEO_URL) {
+        videoSource.src = VIDEO_URL;
+        videoFrame.load();
+        videoFrame.style.display = "block";
+        videoPlaceholder.style.display = "none";
+      } else {
+        videoSource.src = "";
+        videoFrame.load();
+        videoFrame.style.display = "none";
+        videoPlaceholder.style.display = "flex";
+      }
+    }
+
+    function resizeStage() {
+      const mode = detectDevice();
+      const config = layouts[mode];
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const scale = Math.min(vw / config.baseWidth, vh / config.baseHeight);
+
+      stage.style.width = `${config.baseWidth}px`;
+      stage.style.height = `${config.baseHeight}px`;
+      stage.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+      videoContainer.style.left = `${config.video.x}px`;
+      videoContainer.style.top = `${config.video.y}px`;
+      videoContainer.style.width = `${config.video.width}px`;
+      videoContainer.style.height = `${config.video.height}px`;
+
+      applyBackground(mode);
+      deviceBadge.textContent = mode === "mobile" ? `Modo celular • base 1080x1920` : `Modo desktop • base 1920x1080`;
+    }
+
+    function init() {
+      applyVideo();
+      resizeStage();
+    }
+
+    window.addEventListener("resize", resizeStage);
+    window.addEventListener("orientationchange", resizeStage);
+    window.addEventListener("load", init);
+  </script>
+</body>
+</html>
