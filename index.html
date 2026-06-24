@@ -78,16 +78,12 @@
       display: block;
     }
 
-    /* ===== QR POPUP FIXO (Desktop + Mobile) ===== */
+    /* ===== QR POPUP ===== */
     #qr-popup {
       position: fixed;
-      left: 50%;
-      bottom: 28px;
-      transform: translateX(-50%);
       z-index: 100;
       display: block;
-      width: 220px;
-      max-width: 55vw;
+      width: 210px;
       height: auto;
       opacity: 1;
       pointer-events: auto;
@@ -102,7 +98,14 @@
       display: block;
     }
     #qr-popup:hover {
-      transform: translateX(-50%) scale(1.03);
+      transform: translateY(-50%) scale(1.03);
+    }
+
+    /* Desktop - Canto esquerdo, alinhado ao meio vertical */
+    #qr-popup {
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     #device-badge {
@@ -120,15 +123,21 @@
       backdrop-filter: blur(4px);
     }
 
-    /* Mobile */
+    /* Mobile - Inferior centralizado */
     @media (max-width: 768px) {
       body {
         padding: 10px;
       }
       #qr-popup {
+        left: 50%;
+        top: auto;
+        bottom: 24px;
+        transform: translateX(-50%);
         width: 260px;
         max-width: 75vw;
-        bottom: 24px;
+      }
+      #qr-popup:hover {
+        transform: translateX(-50%) scale(1.03);
       }
     }
   </style>
@@ -152,125 +161,11 @@
       </div>
     </div>
 
-    <!-- QR CODE POPUP - Agora fixo e centralizado -->
+    <!-- QR CODE POPUP -->
     <a
       id="qr-popup"
       href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195"
       target="_blank"
       rel="noopener noreferrer"
     >
-      <img src="QR CODE POPUP.png" alt="QR Code - Matrícula" />
-    </a>
-
-    <div id="device-badge">Ajustando layout…</div>
-  </div>
-
-  <script>
-    const BACKGROUND_DESKTOP = "bg-desktop.png";
-    const BACKGROUND_MOBILE = "BG CELULAR.jpeg";
-    const VIDEO_URL = "service-now.mp4";
-
-    const LAYOUTS = {
-      desktop: {
-        baseWidth: 1920,
-        baseHeight: 1080,
-        video: {
-          x: 466.9,
-          y: 235.8,
-          width: 1400,
-          height: 787.5,
-        },
-      },
-      mobile: {
-        baseWidth: 1080,
-        baseHeight: 1920,
-        video: {
-          x: 0,
-          y: 471.2,
-          width: 1080,
-          height: 607.5,
-        },
-      },
-    };
-
-    const stage = document.getElementById("stage");
-    const videoContainer = document.getElementById("video-container");
-    const videoFrame = document.getElementById("video-frame");
-    const bgPlaceholder = document.getElementById("bg-placeholder");
-    const videoPlaceholder = document.getElementById("video-placeholder");
-    const deviceBadge = document.getElementById("device-badge");
-
-    function detectMode() {
-      const isSmall = window.innerWidth <= 768;
-      const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-      return isSmall || isMobileUA ? "mobile" : "desktop";
-    }
-
-    function applyBackground(mode) {
-      const image = mode === "mobile" ? BACKGROUND_MOBILE : BACKGROUND_DESKTOP;
-      stage.style.backgroundImage = `url('${encodeURI(image)}')`;
-      bgPlaceholder.style.display = "none";
-    }
-
-    function applyVideo() {
-      const source = videoFrame.querySelector("source");
-      if (source && VIDEO_URL) {
-        source.src = VIDEO_URL;
-        videoFrame.load();
-        videoFrame.muted = false;
-        videoFrame.style.display = "block";
-        videoPlaceholder.style.display = "none";
-      } else {
-        videoFrame.style.display = "none";
-        videoPlaceholder.textContent = "Vídeo não disponível";
-      }
-    }
-
-    function resizeStage() {
-      const mode = detectMode();
-      const config = LAYOUTS[mode];
-      const vw = Math.max(window.innerWidth - 32, 320);
-      const vh = Math.max(window.innerHeight - 32, 320);
-      const targetRatio = config.baseWidth / config.baseHeight;
-
-      let width = vw;
-      let height = Math.round(width / targetRatio);
-
-      if (height > vh) {
-        height = vh;
-        width = Math.round(height * targetRatio);
-      }
-
-      stage.style.width = `${width}px`;
-      stage.style.height = `${height}px`;
-
-      const left = (config.video.x / config.baseWidth) * 100;
-      const top = (config.video.y / config.baseHeight) * 100;
-      const widthPct = (config.video.width / config.baseWidth) * 100;
-      const heightPct = (config.video.height / config.baseHeight) * 100;
-
-      videoContainer.style.left = `${left}%`;
-      videoContainer.style.top = `${top}%`;
-      videoContainer.style.width = `${widthPct}%`;
-      videoContainer.style.height = `${heightPct}%`;
-
-      deviceBadge.textContent =
-        mode === "mobile"
-          ? "Modo mobile • 1080 × 1920"
-          : "Modo desktop • 1920 × 1080";
-    }
-
-    function init() {
-      applyBackground(detectMode());
-      applyVideo();
-      resizeStage();
-    }
-
-    window.addEventListener("resize", resizeStage);
-    window.addEventListener("orientationchange", resizeStage);
-    window.addEventListener("load", init);
-  </script>
-</body>
-</html>
+      <img src="QR
