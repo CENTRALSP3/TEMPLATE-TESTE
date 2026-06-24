@@ -10,10 +10,8 @@
       margin: 0;
       padding: 0;
     }
-    html,
-    body {
+    html, body {
       width: 100%;
-      min-height: 100%;
       min-height: 100vh;
       background: #000;
       color: #fff;
@@ -43,8 +41,7 @@
       background-size: cover;
       box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
     }
-    #bg-placeholder,
-    #video-placeholder {
+    #bg-placeholder, #video-placeholder {
       position: absolute;
       inset: 0;
       display: flex;
@@ -55,7 +52,6 @@
       color: rgba(255, 255, 255, 0.92);
       font-size: 20px;
       font-weight: 700;
-      letter-spacing: 0.02em;
       background: rgba(0, 0, 0, 0.28);
       pointer-events: none;
     }
@@ -78,20 +74,22 @@
       display: block;
     }
 
-    /* ===== QR POPUP - Escala uniforme com zoom ===== */
+    /* ===== QR POPUP ===== */
     #qr-popup {
-      position: fixed;
-      z-index: 100;
+      position: absolute;
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
       display: block;
+      width: clamp(160px, 11vw, 220px);
       height: auto;
       opacity: 1;
       pointer-events: auto;
       transition: opacity 0.2s ease, transform 0.2s ease;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border-radius: 14px;
       overflow: hidden;
-      /* Tamanho fluido que escala bem com zoom */
-      width: clamp(160px, 11vw, 220px);
     }
     #qr-popup img {
       width: 100%;
@@ -99,14 +97,7 @@
       display: block;
     }
     #qr-popup:hover {
-      transform: translateY(-50%) scale(1.03);
-    }
-
-    /* Desktop - Canto esquerdo + alinhado ao meio vertical */
-    #qr-popup {
-      left: 40px;
-      top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%) scale(1.04);
     }
 
     #device-badge {
@@ -124,21 +115,22 @@
       backdrop-filter: blur(4px);
     }
 
-    /* Mobile - Inferior centralizado */
+    /* Mobile */
     @media (max-width: 768px) {
       body {
         padding: 10px;
       }
       #qr-popup {
+        position: fixed;
         left: 50%;
         top: auto;
         bottom: 24px;
         transform: translateX(-50%);
-        /* Tamanho maior e fluido no mobile */
         width: clamp(180px, 22vw, 280px);
+        z-index: 100;
       }
       #qr-popup:hover {
-        transform: translateX(-50%) scale(1.03);
+        transform: translateX(-50%) scale(1.04);
       }
     }
   </style>
@@ -147,59 +139,42 @@
   <div id="app">
     <div id="stage">
       <div id="bg-placeholder">Carregando imagem de fundo…</div>
+      
       <div id="video-container">
-        <video
-          id="video-frame"
-          controls
-          autoplay
-          playsinline
-          loop
-        >
+        <video id="video-frame" controls autoplay playsinline loop>
           <source src="service-now.mp4" type="video/mp4" />
           Seu navegador não suporta reprodução de vídeo.
         </video>
         <div id="video-placeholder">Carregando vídeo…</div>
       </div>
-    </div>
 
-    <!-- QR CODE POPUP -->
-    <a
-      id="qr-popup"
-      href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <img src="QR CODE POPUP.png" alt="QR Code - Matrícula" />
-    </a>
+      <!-- QR CODE POPUP (agora dentro do stage no desktop) -->
+      <a id="qr-popup" 
+         href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195" 
+         target="_blank" 
+         rel="noopener noreferrer">
+        <img src="QR CODE POPUP.png" alt="QR Code - Matrícula" />
+      </a>
+    </div>
 
     <div id="device-badge">Ajustando layout…</div>
   </div>
 
   <script>
     const BACKGROUND_DESKTOP = "bg-desktop.png";
-    const BACKGROUND_MOBILE = "BG CELULAR.jpeg";
+    const BACKGROUND_MOBILE = "BG CELULAR.jpg";
     const VIDEO_URL = "service-now.mp4";
 
     const LAYOUTS = {
       desktop: {
         baseWidth: 1920,
         baseHeight: 1080,
-        video: {
-          x: 466.9,
-          y: 235.8,
-          width: 1400,
-          height: 787.5,
-        },
+        video: { x: 466.9, y: 235.8, width: 1400, height: 787.5 },
       },
       mobile: {
         baseWidth: 1080,
         baseHeight: 1920,
-        video: {
-          x: 0,
-          y: 471.2,
-          width: 1080,
-          height: 607.5,
-        },
+        video: { x: 0, y: 471.2, width: 1080, height: 607.5 },
       },
     };
 
@@ -212,9 +187,7 @@
 
     function detectMode() {
       const isSmall = window.innerWidth <= 768;
-      const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
+      const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       return isSmall || isMobileUA ? "mobile" : "desktop";
     }
 
@@ -247,7 +220,6 @@
 
       let width = vw;
       let height = Math.round(width / targetRatio);
-
       if (height > vh) {
         height = vh;
         width = Math.round(height * targetRatio);
@@ -266,10 +238,9 @@
       videoContainer.style.width = `${widthPct}%`;
       videoContainer.style.height = `${heightPct}%`;
 
-      deviceBadge.textContent =
-        mode === "mobile"
-          ? "Modo mobile • 1080 × 1920"
-          : "Modo desktop • 1920 × 1080";
+      deviceBadge.textContent = mode === "mobile" 
+        ? "Modo mobile • 1080 × 1920" 
+        : "Modo desktop • 1920 × 1080";
     }
 
     function init() {
