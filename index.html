@@ -1,286 +1,412 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ServiceNow - Preview Responsivo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ServiceNow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
       width: 100%;
       min-height: 100vh;
-      background: #000;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f2eded;
+      color: #1a1a1a;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
     }
-    #app {
-      width: 100%;
-      max-width: 1200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    #stage {
-      position: relative;
+
+    /* =========================================================
+       DESKTOP — CANVAS 1920×1080 com grid 2 colunas
+       ========================================================= */
+    .canvas {
+      width: 1920px;
+      max-width: calc(100vw - 40px);
+      height: 1080px;
+      max-height: calc(100vh - 40px);
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      grid-template-rows: 1fr;
+      gap: 0;
+      background: #f2eded;
+      border-radius: 20px;
       overflow: hidden;
-      border-radius: 24px;
-      background-color: #111;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: cover;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.35);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.06),
+        0 32px 80px rgba(0,0,0,0.15);
+      position: relative;
     }
-    #bg-placeholder, #video-placeholder {
+
+    /* BG image overlay */
+    .canvas::before {
+      content: '';
       position: absolute;
       inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 18px;
-      color: rgba(255, 255, 255, 0.92);
-      font-size: 20px;
-      font-weight: 700;
-      background: rgba(0, 0, 0, 0.28);
+      background: url('bg-textura.png') center/cover no-repeat;
+      opacity: 0.35;
       pointer-events: none;
+      z-index: 1;
+      mix-blend-mode: multiply;
     }
-    #video-placeholder {
-      background: rgba(0, 0, 0, 0.45);
+
+    /* ===== SIDEBAR — desktop ===== */
+    .sidebar {
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+      position: relative;
+      z-index: 5;
+      border-right: 1px solid rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(4px);
     }
-    #video-container {
-      position: absolute;
-      overflow: hidden;
+
+    /* --- LOGO (desktop: topo com 10px de espaçamento) --- */
+    .logo-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 10px;
+    }
+    .logo-container img {
+      width: 306px;
+      height: auto;
+      display: block;
+    }
+
+    /* --- QR CODE --- */
+    .qr-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 24px;
+    }
+    .qr-container img {
+      width: 200px;
+      height: 200px;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .qr-label {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #1e5175;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .qr-label strong {
+      color: #d4af37;
+      font-weight: 800;
+    }
+    .qr-alert {
+      margin-top: 2px;
+      font-size: 9px;
+      color: #e74c3c;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* --- DOWNLOAD (desktop: abaixo do QR) --- */
+    .download-area {
+      width: 100%;
+      padding: 12px 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .download-btn {
+      width: 200px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: transparent;
+      gap: 10px;
+      background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 16px rgba(46, 204, 113, 0.3);
     }
-    #video-frame {
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(46, 204, 113, 0.45);
+    }
+    .download-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* ===== MAIN CONTENT — desktop ===== */
+    .content {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* --- VÍDEO (desktop: centralizado verticalmente) --- */
+    .video-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+    }
+    .video-wrapper {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      border: 0;
-      display: block;
-    }
-
-    /* ===== QR POPUP (Desktop) ===== */
-    #qr-popup {
-      position: absolute;
-      left: 40px;
-      top: 62%;
-      transform: translateY(-50%);
-      z-index: 20;
-      display: block;
-      width: clamp(185px, 12.8vw, 253px);
-      height: auto;
-      opacity: 1;
-      pointer-events: auto;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      border-radius: 14px;
+      border-radius: 12px;
       overflow: hidden;
-    }
-    #qr-popup img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    #qr-popup:hover {
-      transform: translateY(-50%) scale(1.04);
-    }
-
-    /* ===== BOTÃO DOWNLOAD MATERIAL - Preto + Calibri Bold ===== */
-    #download-btn {
-      position: absolute;
-      bottom: 28px;
-      left: 28px;
-      z-index: 25;
-      padding: 11px 20px;
-      font-family: Calibri, "Calibri Bold", Arial, Helvetica, sans-serif;
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.8px;
-      color: #000;                    /* ← Cor preta */
-      background: rgba(255, 255, 255, 0.13);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      border-radius: 999px;
-      text-decoration: none;
-      backdrop-filter: blur(10px);
-      transition: all 0.2s ease;
-      white-space: nowrap;
+      background: #000;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    #download-btn:hover {
-      background: rgba(255, 255, 255, 0.22);
-      transform: translateY(-1px);
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
-    /* Mobile */
+    /* =========================================================
+       TABLET (768–1100px) — grid adaptado
+       ========================================================= */
+    @media (max-width: 1100px) {
+      .canvas {
+        grid-template-columns: 240px 1fr;
+        max-width: 100vw;
+        max-height: none;
+        height: auto;
+        min-height: 100vh;
+        border-radius: 0;
+      }
+      .canvas::before { border-radius: 0; }
+
+      .logo-container { padding: 5px; }
+      .logo-container img { width: 180px; }
+      .qr-container img { width: 160px; height: 160px; }
+      .download-btn { width: 160px; height: 56px; font-size: 12px; }
+      .download-area { padding: 8px 20px 16px; }
+      .video-container { padding: 16px 24px; }
+    }
+
+    /* =========================================================
+       MOBILE (<=768px) — vertical layout
+       ========================================================= */
     @media (max-width: 768px) {
-      body {
-        padding: 10px;
+      html, body { background: #f2eded; }
+      body { align-items: flex-start; }
+
+      .canvas {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100vw;
+        min-height: 100vh;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
       }
-      #qr-popup {
+      .canvas::before {
+        border-radius: 0;
         position: fixed;
-        left: 50%;
-        top: auto;
-        bottom: 24px;
-        transform: translateX(-50%);
-        width: clamp(180px, 22vw, 280px);
-        z-index: 100;
-      }
-      #qr-popup:hover {
-        transform: translateX(-50%) scale(1.04);
+        height: 100%;
       }
 
-      #download-btn {
-        bottom: 22px;
-        left: 18px;
-        padding: 10px 8px;
-        font-size: 11px;
-        writing-mode: vertical-rl;
-        text-orientation: mixed;
-        transform: rotate(180deg);
-        border-radius: 999px;
-        min-height: 92px;
+      .sidebar {
+        border-right: none;
+        background: transparent;
+        backdrop-filter: none;
+        padding: 20px 16px 8px;
+        gap: 8px;
+        width: 100%;
       }
-      #download-btn:hover {
-        transform: rotate(180deg) translateY(-1px);
+
+      .logo-container {
+        height: auto;
+        width: 100%;
+        padding: 0;
+        display: flex;
+        justify-content: center;
       }
+      .logo-container img {
+        width: 260px;
+        height: auto;
+        max-height: 160px;
+      }
+
+      .sidebar > .qr-container {
+        display: none;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        flex: 0 0 auto;
+        padding: 0 12px;
+      }
+      .video-container {
+        transform: none;
+        padding: 0;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: flex;
+      }
+      .video-wrapper {
+        border-radius: 10px;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      .video-wrapper video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .download-area {
+        display: none;
+      }
+      .bottom-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 20px 20px 24px;
+        gap: 16px;
+        margin-top: 15vh;
+      }
+      .bottom-actions .qr-container {
+        flex: 0 0 45%;
+        max-width: 45%;
+        padding: 0;
+      }
+      .bottom-actions .qr-container img {
+        width: 100%;
+        height: auto;
+        max-width: 200px;
+      }
+      .bottom-actions .qr-label { font-size: 9px; }
+      .bottom-actions .qr-alert { font-size: 8px; }
+
+      .bottom-actions .download-btn {
+        flex: 0 0 45%;
+        max-width: 45%;
+        width: auto;
+        height: 80px;
+        font-size: 13px;
+      }
+    }
+
+    .bottom-actions { display: none; }
+
+    @media (max-width: 768px) {
+      .bottom-actions { display: flex; }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar { padding: 12px 12px 4px; }
+      .logo-container img { width: 180px; max-height: 120px; }
+      .qr-container img { width: 150px; height: 150px; }
+      .content { padding: 0 8px; }
+      .bottom-actions { padding: 8px 12px 16px; gap: 10px; margin-top: 8vh; }
+      .bottom-actions .download-btn { height: 60px; font-size: 12px; }
     }
   </style>
 </head>
 <body>
-  <div id="app">
-    <div id="stage">
-      <div id="bg-placeholder">Carregando imagem de fundo…</div>
-      
-      <div id="video-container">
-        <video id="video-frame" controls autoplay playsinline loop>
-          <source src="service-now.mp4" type="video/mp4" />
-          Seu navegador não suporta reprodução de vídeo.
-        </video>
-        <div id="video-placeholder">Carregando vídeo…</div>
+  <div class="canvas">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+
+      <!-- 1. LOGO -->
+      <div class="logo-container">
+        <img src="LOGO.png" alt="ServiceNow">
       </div>
 
-      <!-- QR CODE POPUP -->
-      <a id="qr-popup" 
-         href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195" 
-         target="_blank" 
-         rel="noopener noreferrer">
-        <img src="QR CODE POPUP.png" alt="QR Code - Matrícula" />
-      </a>
+      <!-- 2. QR CODE -->
+      <div class="qr-container">
+        <a href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195" target="_blank" rel="noopener noreferrer">
+          <img src="qrcode.png" alt="QR Code">
+        </a>
+        <div class="qr-label">
+          Registre sua presença <strong>LENDO</strong> ou <strong>CLICANDO</strong> no QR CODE
+        </div>
+        <div class="qr-alert">Obrigatório</div>
+      </div>
 
-      <!-- BOTÃO DOWNLOAD MATERIAL -->
-      <a id="download-btn" 
-         href="https://ceabr-my.sharepoint.com/:b:/g/personal/lucas_banza_cea_com_br/IQBkypRdn-YJQa2VD_Xw97rlAUjbVLVNs3R-Ro2CL5kXbMo?e=Zd6FeZ" 
-         target="_blank" 
-         rel="noopener noreferrer">
-        DOWNLOAD MATERIAL
+      <!-- 3. DOWNLOAD -->
+      <div class="download-area">
+        <a class="download-btn"
+           href="https://ceabr-my.sharepoint.com/:b:/g/personal/lucas_banza_cea_com_br/IQBkypRdn-YJQa2VD_Xw97rlAUjbVLVNs3R-Ro2CL5kXbMo?e=Zd6FeZ"
+           target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          DOWNLOAD
+        </a>
+      </div>
+
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="content">
+      <section class="video-container">
+        <div class="video-wrapper">
+          <video controls autoplay playsinline loop>
+            <source src="service-now.mp4" type="video/mp4">
+            Seu navegador não suporta reprodução de vídeo.
+          </video>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== BOTTOM ACTIONS (mobile ONLY) ===== -->
+    <div class="bottom-actions">
+      <div class="qr-container">
+        <a href="https://academiadamodacea.com.br/app/cursopresencial/matricula/a8c85dda-fa08-40c8-a35c-e5f49c6f3195" target="_blank" rel="noopener noreferrer">
+          <img src="qrcode.png" alt="QR Code">
+        </a>
+        <div class="qr-label">
+          Registre sua presença <strong>LENDO</strong> ou <strong>CLICANDO</strong> no QR CODE
+        </div>
+        <div class="qr-alert">Obrigatório</div>
+      </div>
+      <a class="download-btn"
+         href="https://ceabr-my.sharepoint.com/:b:/g/personal/lucas_banza_cea_com_br/IQBkypRdn-YJQa2VD_Xw97rlAUjbVLVNs3R-Ro2CL5kXbMo?e=Zd6FeZ"
+         target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Download Material
       </a>
     </div>
+
   </div>
-
-  <script>
-    const BACKGROUND_DESKTOP = "bg-desktop.png";
-    const BACKGROUND_MOBILE = "BG CELULAR.jpg";
-    const VIDEO_URL = "service-now.mp4";
-
-    const LAYOUTS = {
-      desktop: {
-        baseWidth: 1920,
-        baseHeight: 1080,
-        video: { x: 466.9, y: 235.8, width: 1400, height: 787.5 },
-      },
-      mobile: {
-        baseWidth: 1080,
-        baseHeight: 1920,
-        video: { x: 0, y: 471.2, width: 1080, height: 607.5 },
-      },
-    };
-
-    const stage = document.getElementById("stage");
-    const videoContainer = document.getElementById("video-container");
-    const videoFrame = document.getElementById("video-frame");
-    const bgPlaceholder = document.getElementById("bg-placeholder");
-    const videoPlaceholder = document.getElementById("video-placeholder");
-
-    function detectMode() {
-      const isSmall = window.innerWidth <= 768;
-      const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      return isSmall || isMobileUA ? "mobile" : "desktop";
-    }
-
-    function applyBackground(mode) {
-      const image = mode === "mobile" ? BACKGROUND_MOBILE : BACKGROUND_DESKTOP;
-      stage.style.backgroundImage = `url('${encodeURI(image)}')`;
-      bgPlaceholder.style.display = "none";
-    }
-
-    function applyVideo() {
-      const source = videoFrame.querySelector("source");
-      if (source && VIDEO_URL) {
-        source.src = VIDEO_URL;
-        videoFrame.load();
-        videoFrame.muted = false;
-        videoFrame.style.display = "block";
-        videoPlaceholder.style.display = "none";
-      } else {
-        videoFrame.style.display = "none";
-        videoPlaceholder.textContent = "Vídeo não disponível";
-      }
-    }
-
-    function resizeStage() {
-      const mode = detectMode();
-      const config = LAYOUTS[mode];
-      const vw = Math.max(window.innerWidth - 32, 320);
-      const vh = Math.max(window.innerHeight - 32, 320);
-      const targetRatio = config.baseWidth / config.baseHeight;
-
-      let width = vw;
-      let height = Math.round(width / targetRatio);
-      if (height > vh) {
-        height = vh;
-        width = Math.round(height * targetRatio);
-      }
-
-      stage.style.width = `${width}px`;
-      stage.style.height = `${height}px`;
-
-      const left = (config.video.x / config.baseWidth) * 100;
-      const top = (config.video.y / config.baseHeight) * 100;
-      const widthPct = (config.video.width / config.baseWidth) * 100;
-      const heightPct = (config.video.height / config.baseHeight) * 100;
-
-      videoContainer.style.left = `${left}%`;
-      videoContainer.style.top = `${top}%`;
-      videoContainer.style.width = `${widthPct}%`;
-      videoContainer.style.height = `${heightPct}%`;
-    }
-
-    function init() {
-      applyBackground(detectMode());
-      applyVideo();
-      resizeStage();
-    }
-
-    window.addEventListener("resize", resizeStage);
-    window.addEventListener("orientationchange", resizeStage);
-    window.addEventListener("load", init);
-  </script>
 </body>
 </html>
