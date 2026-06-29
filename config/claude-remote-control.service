@@ -1,0 +1,46 @@
+[Unit]
+Description=Claude Code Remote Control Server
+Documentation=https://code.claude.com/docs/en/remote-control
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=YOUR_USERNAME
+Environment=HOME=/home/YOUR_USERNAME
+Environment=CLAUDE_HOME=/home/YOUR_USERNAME/.claude
+WorkingDirectory=/home/YOUR_USERNAME
+
+# Caminho para o binário do Claude Code (ajuste se necessário)
+ExecStartPre=/usr/bin/which claude
+ExecStart=/home/YOUR_USERNAME/claude-remote-control/scripts/start.sh "Servidor Claude"
+
+# Reinicialização automática
+Restart=on-failure
+RestartSec=10
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+# Limites de recursos (segurança)
+LimitNOFILE=65536
+LimitNPROC=4096
+MemoryMax=2G
+CPUQuota=100%
+
+# Sandboxing (systemd hardening)
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/YOUR_USERNAME/.claude /home/YOUR_USERNAME/claude-remote-control
+PrivateTmp=true
+NoNewPrivileges=true
+CapabilityBoundingSet=
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target
